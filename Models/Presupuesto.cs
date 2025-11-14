@@ -4,7 +4,7 @@ using EspacioPresupuestoDetalle;
 namespace EspacioPresupuesto
 {
 
-    class Presupuesto
+    public class Presupuesto
     {
         private int idPresupuesto;
         private string nombreDestinatario;

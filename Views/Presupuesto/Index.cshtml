@@ -1,0 +1,36 @@
+@model List<EspacioPresupuesto.Presupuesto>
+
+@{
+    ViewData["Title"] = "Presupuestos";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Presupuestos!!</h1>
+    <table class="table">
+        <thead>
+            LISTA DE PRESUPUESTOS
+        </thead>
+        <tbody>
+            <th>
+                Cliente
+            </th>
+            <th>Fecha</th>
+            <th>Detalle</th>
+            @foreach (EspacioPresupuesto.Presupuesto presupuesto in Model)
+            {
+                <tr>
+                    <td>
+                        @presupuesto.NombreDestinatario
+                    </td>
+                    <td>
+                        @presupuesto.FechaCreacion.ToShortDateString()</td>
+                    <td>
+                        <a class="nav-link btn btn-info" asp-controller="Presupuesto" asp-action="Detalle" asp-route-detalle="@presupuesto.IdPresupuesto"> Ver
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

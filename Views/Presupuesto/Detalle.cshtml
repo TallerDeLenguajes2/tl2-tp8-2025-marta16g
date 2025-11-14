@@ -1,0 +1,31 @@
+@model List<EspacioPresupuestoDetalle.PresupuestoDetalle>
+
+@{
+    ViewData["Title"] = "Detalle del Producto";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Detalle!!</h1>
+    <table class="table">
+        <thead>
+            LISTA DE PRESUPUESTOS
+        </thead>
+        <tbody>
+           
+            <th>Producto</th>
+            <th>Cantidad</th>
+            @foreach (EspacioPresupuestoDetalle.PresupuestoDetalle detalle in Model)
+            {
+                <tr>
+                    <td>
+                        @detalle.Producto.Descripcion;
+                    </td>
+                    <td>
+                        @detalle.Cantidad
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
