@@ -39,7 +39,7 @@ public class PresupuestoRepository
         using (var conexion = new SqliteConnection(connectionString))
         {
             conexion.Open();
-            string consulta = "SELECT * FROM Presupuesto";
+            string consulta = "SELECT * FROM Presupuesto ORDER BY FechaCreacion";
             using var comando = new SqliteCommand(consulta, conexion);
 
             using var lector = comando.ExecuteReader();

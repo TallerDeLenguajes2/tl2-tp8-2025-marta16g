@@ -1,0 +1,18 @@
+@model EspacioPresupuesto.Presupuesto
+
+@{
+    ViewData["Title"] = "Eliminar Presupuesto";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Confirmación de eliminación de Presupuesto</h1>
+    <div>
+    <h3>¿Está seguro que quiere eliminar el presupuesto del cliente @Model.NombreDestinatario de ID @Model.IdPresupuesto?</h3>
+    <form asp-action="Delete">
+    <input type="hidden" asp-for="IdPresupuesto" />
+    <input type="submit" value="Sí, deseo eliminar" class="btn btn-danger" /> 
+    @* <button type="submit" class="btn btn-danger">Sí, deseo eliminarlo</button> *@
+    </form>
+    </div>
+
+</div>

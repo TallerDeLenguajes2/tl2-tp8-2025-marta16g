@@ -16,6 +16,7 @@
             </th>
             <th>Fecha</th>
             <th>Detalle</th>
+            <th>Acciones</th>
             @foreach (EspacioPresupuesto.Presupuesto presupuesto in Model)
             {
                 <tr>
@@ -25,12 +26,19 @@
                     <td>
                         @presupuesto.FechaCreacion.ToShortDateString()</td>
                     <td>
-                        <a class="nav-link btn btn-info" asp-controller="Presupuesto" asp-action="Detalle" asp-route-detalle="@presupuesto.IdPresupuesto"> Ver
+                        <a class="nav-link btn btn-outline-info" asp-controller="Presupuesto" asp-action="Detalle"
+                            asp-route-idPresupuesto="@presupuesto.IdPresupuesto"> Ver
                         </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-warning">Editar</a>
+                        <a class="btn btn-danger" asp-controller="Presupuesto" asp-action="Eliminar" asp-route-idPresupuesto = "@presupuesto.IdPresupuesto">Eliminar</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
+
 
 </div>

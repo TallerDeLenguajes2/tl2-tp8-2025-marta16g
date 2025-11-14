@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using EspacioPresupuesto;
 using EspacioPresupuestoDetalle;
+using EspacioProducto;
 using Microsoft.AspNetCore.Mvc;
 using tl2_tp8_2025_marta16g.Models;
 
@@ -29,7 +30,47 @@ public class PresupuestoController : Controller
         detalle = presupuestoRepository.TraerDetallesPresupuesto(idPresupuesto);
         return View(detalle);
     }
-   
+
+    [HttpPost]
+    public IActionResult AgregarDetalle(int idPresupuesto, int idProducto, int cantidad)
+    {
+        bool exito;
+        exito = presupuestoRepository.AgregarDetalle(idPresupuesto, idProducto, cantidad);
+        if (exito)
+        {
+            return RedirectToAction("Detalle");
+        }
+        else
+        {
+            return BadRequest("Algo salió mal");
+        }
+    }
+
+
+    [HttpGet]
+    public IActionResult Eliminar(int idPresupuesto)
+    {
+        List<Presupuesto> listaDePresupuestos = presupuestoRepository.ListarPresupuetos();
+        Presupuesto presupuestoAEliminar = listaDePresupuestos.Find(p => p.IdPresupuesto == idPresupuesto);
+        return View(presupuestoAEliminar);
+    }
+
+
+    [HttpPost, ActionName("Delete")]
+    public IActionResult EliminarConfirmado(int idPresupuesto)
+    {
+        bool exito;
+        exito = presupuestoRepository.EliminarPresupuesto(idPresupuesto);
+        if (exito)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+        else
+        {
+            return Error();
+        }
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

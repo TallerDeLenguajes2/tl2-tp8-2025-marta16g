@@ -8,17 +8,17 @@
     <h1 class="display-4">Detalle!!</h1>
     <table class="table">
         <thead>
-            LISTA DE PRESUPUESTOS
+            LISTA DE PRODUCTOS DEL PRESUPUESTO
         </thead>
         <tbody>
-           
+
             <th>Producto</th>
             <th>Cantidad</th>
             @foreach (EspacioPresupuestoDetalle.PresupuestoDetalle detalle in Model)
             {
                 <tr>
                     <td>
-                        @detalle.Producto.Descripcion;
+                        @detalle.Producto.Descripcion
                     </td>
                     <td>
                         @detalle.Cantidad
@@ -27,5 +27,44 @@
             }
         </tbody>
     </table>
+    <div class="d-flex justify-content-center">
+        <a class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalAgregarDetalle">Agregar detalle</a>
+    </div>
+
+    <div class="d-flex justify-content-left">
+        <a asp-controller="Presupuesto" asp-action="Index" class="btn btn-dark m-5">volver</a>
+    </div>
+
+    <div class="modal fade" id="modalAgregarDetalle">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Detalle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form asp-controller="Presupuesto" asp-action="AgregarDetalle" method="post">
+
+                        <div class="mb-3">
+                            <label>Producto</label>
+                            <select name="Producto">
+                                <option value="">
+                                    Seleccionar producto...</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Precio</label>
+                            <input class="form-control" type="number" name="Precio" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Guardar</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
