@@ -12,7 +12,6 @@ namespace EspacioPresupuestoDetalle
         public int Cantidad { get => cantidad; set => cantidad = value; }
 
         public PresupuestoDetalle(){}
-
         public PresupuestoDetalle(Producto producto, int cantidad)
         {
             this.producto = producto;

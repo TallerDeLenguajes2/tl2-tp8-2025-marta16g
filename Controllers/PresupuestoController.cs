@@ -48,13 +48,27 @@ public class PresupuestoController : Controller
 
 
     [HttpGet]
-    public IActionResult Eliminar(int idPresupuesto)
+    public IActionResult Editar(int idPresupuesto)
     {
-        List<Presupuesto> listaDePresupuestos = presupuestoRepository.ListarPresupuetos();
-        Presupuesto presupuestoAEliminar = listaDePresupuestos.Find(p => p.IdPresupuesto == idPresupuesto);
-        return View(presupuestoAEliminar);
+        Presupuesto presupuesto = presupuestoRepository.BuscarPresupuesto(idPresupuesto);
+        return View(presupuesto);
     }
 
+    [HttpPost]
+    public IActionResult Editar(Presupuesto presupuesto)
+    {
+        presupuestoRepository.Modificar(presupuesto.IdPresupuesto,presupuesto);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    
+    [HttpGet]
+    public IActionResult Eliminar(int idPresupuesto)
+    {
+        Presupuesto presupuesto = presupuestoRepository.BuscarPresupuesto(idPresupuesto);
+        return View(presupuesto);
+    }
 
     [HttpPost, ActionName("Delete")]
     public IActionResult EliminarConfirmado(int idPresupuesto)
@@ -77,4 +91,6 @@ public class PresupuestoController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+
 }

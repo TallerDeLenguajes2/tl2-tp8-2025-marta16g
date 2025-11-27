@@ -1,0 +1,55 @@
+@model EspacioPresupuesto.Presupuesto
+
+@{
+    ViewData["Title"] = "Editar Presupuesto";
+}
+
+<div class="text-center">
+    <h1 class="display-4 m-4">Edición de un Presupuesto</h1>
+    <div class="container mt-4 d-flex justify-content-center">
+    <div class="card border-primary shadow rounded-3" style="max-width: 500px; width: 100%;">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Editar Presupuesto</h5>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-controller="Presupuesto" asp-action="Editar" method="post">
+            
+             <input type="hidden" name="IdPresupuesto" value="@Model.IdPresupuesto" />
+
+                <!-- Nombre del destinatario -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nombre del destinatario</label>
+                    <input type="text"
+                           class="form-control"
+                           name="NombreDestinatario"
+                           value="@Model.NombreDestinatario"
+                           required />
+                </div>
+
+                <!-- Fecha de creación -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Fecha de creación</label>
+                    <input type="date"
+                           class="form-control"
+                           name="FechaCreacion"
+                           value="@Model.FechaCreacion.ToString("yyyy-MM-dd")"
+                           max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                           required />
+                </div>
+
+                <!-- Botón -->
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        Guardar cambios
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+</div>

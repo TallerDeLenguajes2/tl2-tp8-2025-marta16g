@@ -1,0 +1,51 @@
+@model EspacioProducto.Producto
+
+@{
+    ViewData["Title"] = "Editar Producto";
+}
+
+<div class="text-center">
+    <h1 class="display-4 m-4">Edición de un Producto</h1>
+    <div class="container mt-4 d-flex justify-content-center">
+    <div class="card border-primary shadow rounded-3" style="max-width: 500px; width: 100%;">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Editar Producto</h5>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-controller="Producto" asp-action="Editar" method="post">
+             <input type="hidden" name="IdProducto" value="@Model.IdProducto" />
+
+                <!-- Descripción -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Descripción del producto</label>
+                    <input name="Descripcion" class="form-control" type="text"
+                           value="@Model.Descripcion.ToString()"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Precio</label>
+                    <input name="Precio" class="form-control" type="number"
+                           value="@Model.Precio"
+                           step="0.1"
+                           min="0"
+                           required />
+                </div>
+
+
+                <!-- Botón -->
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary px-4">
+                        Guardar cambios
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+</div>

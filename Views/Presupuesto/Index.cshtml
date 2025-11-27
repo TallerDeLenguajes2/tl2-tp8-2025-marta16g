@@ -15,6 +15,7 @@
                 Cliente
             </th>
             <th>Fecha</th>
+            <th>Monto con IVA</th>
             <th>Detalle</th>
             <th>Acciones</th>
             @foreach (EspacioPresupuesto.Presupuesto presupuesto in Model)
@@ -24,15 +25,20 @@
                         @presupuesto.NombreDestinatario
                     </td>
                     <td>
-                        @presupuesto.FechaCreacion.ToShortDateString()</td>
+                        @presupuesto.FechaCreacion.ToShortDateString()
+                    </td>
+                    <td>
+                        $@presupuesto.MontoPresupuestoConIva()
+                    </td>
                     <td>
                         <a class="nav-link btn btn-outline-info" asp-controller="Presupuesto" asp-action="Detalle"
                             asp-route-idPresupuesto="@presupuesto.IdPresupuesto"> Ver
                         </a>
                     </td>
                     <td>
-                        <a class="btn btn-warning">Editar</a>
-                        <a class="btn btn-danger" asp-controller="Presupuesto" asp-action="Eliminar" asp-route-idPresupuesto = "@presupuesto.IdPresupuesto">Eliminar</a>
+                        <a class="btn btn-warning" asp-controller="Presupuesto" asp-action="Editar" asp-route-idPresupuesto="@presupuesto.IdPresupuesto">Editar</a>
+                        <a class="btn btn-danger" asp-controller="Presupuesto" asp-action="Eliminar"
+                            asp-route-idPresupuesto="@presupuesto.IdPresupuesto">Eliminar</a>
                     </td>
                 </tr>
             }

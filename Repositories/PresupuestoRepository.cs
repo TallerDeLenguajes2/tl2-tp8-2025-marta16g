@@ -8,6 +8,33 @@ public class PresupuestoRepository
 {
     private string connectionString = "Data Source=DB/MiTienda.db";
 
+    //TRAER UN PRESUPUESTO POR ID
+    public Presupuesto BuscarPresupuesto(int id)
+    {
+        using (var conexion = new SqliteConnection(connectionString))
+        {
+            var miPresupuesto = new Presupuesto();
+            conexion.Open();
+            string consulta = "SELECT * FROM Presupuesto WHERE IdPresupuesto = @Id";
+            using var comando = new SqliteCommand(consulta, conexion);
+            comando.Parameters.Add(new SqliteParameter("@Id", id));
+
+            using var lector = comando.ExecuteReader();
+
+            while (lector.Read())
+            {
+                miPresupuesto = new Presupuesto(Convert.ToInt32(lector["IdPresupuesto"]),
+                lector["NombreDestinatario"].ToString(),
+                Convert.ToDateTime(lector["FechaCreacion"]),
+                TraerDetallesPresupuesto(Convert.ToInt32(lector["IdPresupuesto"])));
+            }
+
+            return miPresupuesto;
+
+
+        }
+    }
+
 
     //CREAR UN NUEVO PRESUPUESTO
     public int AltaPresupuesto(Presupuesto presupuesto)
@@ -110,6 +137,22 @@ public class PresupuestoRepository
         }
     }
 
+    //MODIFICAR UN PRESUPUESTO
+    public void Modificar(int id, Presupuesto presupuesto)
+    {
+        using (var conexion = new SqliteConnection(connectionString))
+        {
+            conexion.Open();
+            string consulta = "UPDATE Presupuesto SET NombreDestinatario = @Nombre, FechaCreacion = @Fecha WHERE idPresupuesto = @Id";
+            using var comando = new SqliteCommand(consulta, conexion);
+            comando.Parameters.Add(new SqliteParameter("@Nombre", presupuesto.NombreDestinatario));
+            comando.Parameters.Add(new SqliteParameter("@Fecha", presupuesto.FechaCreacion));
+            comando.Parameters.Add(new SqliteParameter("@Id", id));
+
+            comando.ExecuteNonQuery();
+        }
+    }
+
 
     //ELIMINAR UN PRESUPUESTO POR ID
     public bool EliminarPresupuesto(int id)
@@ -117,7 +160,7 @@ public class PresupuestoRepository
         using (var conexion = new SqliteConnection(connectionString))
         {
             conexion.Open();
-            
+
             string consulta = "DELETE FROM Presupuesto WHERE IdPresupuesto = @Id";
 
             var comando = new SqliteCommand(consulta, conexion);

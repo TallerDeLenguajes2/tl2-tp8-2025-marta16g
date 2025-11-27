@@ -9,13 +9,14 @@ namespace EspacioPresupuesto
         private int idPresupuesto;
         private string nombreDestinatario;
         private DateTime fechaCreacion;
-        private List<PresupuestoDetalle> detalle;
+        private List<PresupuestoDetalle> detalle = new List<PresupuestoDetalle>();
 
         public int IdPresupuesto { get => idPresupuesto; set => idPresupuesto = value; }
         public string NombreDestinatario { get => nombreDestinatario; set => nombreDestinatario = value; }
         public DateTime FechaCreacion { get => fechaCreacion; set => fechaCreacion = value; }
         public List<PresupuestoDetalle> Detalle { get => detalle; set => detalle = value; }
 
+        public Presupuesto(){}
         public Presupuesto(int idPresupuesto, string nombreDestinatario, DateTime fechaCreacion, List<PresupuestoDetalle> detalle)
         {
             this.idPresupuesto = idPresupuesto;
@@ -24,19 +25,34 @@ namespace EspacioPresupuesto
             this.detalle = detalle;
         }
 
-        public float MontoPresupuesto()
+        public double MontoPresupuesto()
         {
-            return 0;
+            double total = 0;
+            foreach (PresupuestoDetalle d in Detalle)
+            {
+                total += d.Producto.Precio * d.Cantidad;
+            }
+            return total;
         }
 
-        public float MontoPresupuestoConIva()
+        public double MontoPresupuestoConIva()
         {
-            return 0;
+            double total = 0;
+            foreach (var d in Detalle)
+            {
+                total += d.Producto.Precio * d.Cantidad;
+            }
+            return total * 1.2;
         }
 
         public int CantidadProductos()
         {
-            return 0;
+            int totalProductos = 0;
+            foreach (var d in Detalle)
+            {
+                totalProductos += d.Cantidad;
+            }
+            return totalProductos;
         }
     }
 }

@@ -9,6 +9,29 @@ namespace EspacioProductoRepository
     public class ProductoRepository
     {
         private string connectionString = "Data Source=DB/MiTienda.db";
+
+        //TRAER UN PRODUCTO POR ID
+        public Producto BuscarProducto(int id)
+        {
+            using (var conexion = new SqliteConnection(connectionString))
+            {
+                var miProducto = new Producto();
+                conexion.Open();
+                string consulta = "SELECT * FROM Producto WHERE IdProducto = @Id";
+                using var comando = new SqliteCommand(consulta, conexion);
+                comando.Parameters.Add(new SqliteParameter("@Id", id));
+
+                using var lector = comando.ExecuteReader();
+
+                while (lector.Read())
+                {
+                    miProducto = new Producto(Convert.ToInt32(lector["IdProducto"]),
+                    lector["Descripcion"].ToString(), Convert.ToDouble(lector["Precio"]));
+                }
+
+                return miProducto;
+            }
+        }
         public int Alta(Producto producto)
         {
             int nuevoId = 0;
@@ -57,6 +80,30 @@ namespace EspacioProductoRepository
                 }
             }
             return productos;
+        }
+
+        public bool EliminarProducto(int id)
+        {
+            using (var conexion = new SqliteConnection(connectionString))
+            {
+                conexion.Open();
+
+                string consulta = "DELETE FROM Producto WHERE IdProducto = @Id";
+
+                var comando = new SqliteCommand(consulta, conexion);
+
+                comando.Parameters.Add(new SqliteParameter("@Id", id));
+
+                int filas = comando.ExecuteNonQuery();
+                if (filas > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
     }
 

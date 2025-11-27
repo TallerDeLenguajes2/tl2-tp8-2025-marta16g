@@ -15,6 +15,11 @@
                 <tr>
                     <td>@producto.Descripcion</td>
                     <td>@producto.Precio</td>
+                    <td>
+                        <a class="btn btn-warning" asp-controller="Producto" asp-action="Editar" asp-route-idProducto="@producto.IdProducto">Editar</a>
+                        <a class="btn btn-danger" asp-controller="Producto" asp-action="Eliminar"
+                            asp-route-idProducto="@producto.IdProducto">Eliminar</a>
+                    </td>
                 </tr>
             }
 
