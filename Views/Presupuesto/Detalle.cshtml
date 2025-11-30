@@ -1,70 +1,52 @@
-@model List<EspacioPresupuestoDetalle.PresupuestoDetalle>
+@model EspacioPresupuesto.Presupuesto
 
-@{
-    ViewData["Title"] = "Detalle del Producto";
-}
+<div>
+    <h4>Detalle del Presupuesto</h4>
+    <p><strong>ID:</strong> @Model.IdPresupuesto</p>
+    <p><strong>Cliente:</strong>@Model.NombreDestinatario</p>
+    <p><strong>Fecha:</strong> @Model.FechaCreacion.ToShortDateString()</p>
+</div>
 
-<div class="text-center">
-    <h1 class="display-4">Detalle!!</h1>
-    <table class="table">
-        <thead>
-            LISTA DE PRODUCTOS DEL PRESUPUESTO
-        </thead>
-        <tbody>
+<hr/>
 
+<h4>Productos Asociados</h4>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
             <th>Producto</th>
             <th>Cantidad</th>
-            @foreach (EspacioPresupuestoDetalle.PresupuestoDetalle detalle in Model)
-            {
-                <tr>
-                    <td>
-                        @detalle.Producto.Descripcion
-                    </td>
-                    <td>
-                        @detalle.Cantidad
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="d-flex justify-content-center">
-        <a class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalAgregarDetalle">Agregar detalle</a>
-    </div>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var detalle in Model.Detalle)
+        {
+            <tr>
+                <td>@detalle.Producto.Descripcion</td>
+                <td>@detalle.Cantidad</td>
+                <td>@detalle.Producto.Precio</td>
+                <td>@(detalle.Cantidad * detalle.Producto.Precio)</td>
+                <td>
+                    <a asp-controller="Presupuesto" asp-action="EliminarDetalle"
+                       asp-route-idPresupuesto="@Model.IdPresupuesto"
+                       asp-route-idProducto="@detalle.Producto.IdProducto"
+                       class="btn btn-danger btn-sm">
+                        Quitar
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-    <div class="d-flex justify-content-left">
-        <a asp-controller="Presupuesto" asp-action="Index" class="btn btn-dark m-5">volver</a>
-    </div>
+<p> <strong>Cantidad de Productos:</strong> @Model.CantidadProductos()</p>
+<p><strong>Total: </strong> $ @Model.MontoPresupuesto()</p>
+<p><strong>Total (CON IVA):</strong> $ @Model.MontoPresupuestoConIva()</p>
 
-    <div class="modal fade" id="modalAgregarDetalle">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Agregar Detalle</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
 
-                <div class="modal-body">
-                    <form asp-controller="Presupuesto" asp-action="AgregarDetalle" method="post">
-
-                        <div class="mb-3">
-                            <label>Producto</label>
-                            <select name="Producto">
-                                <option value="">
-                                    Seleccionar producto...</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Precio</label>
-                            <input class="form-control" type="number" name="Precio" required />
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Guardar</button>
-
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
+<div class="mt-3 d-flex align-items-center gap-2">
+    <a asp-action="AgregarProducto"  asp-route-idPresupuesto="@Model.IdPresupuesto" class="btn btn-success">Agregar producto</a>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
 </div>

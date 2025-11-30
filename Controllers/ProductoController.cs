@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using tl2_tp8_2025_marta16g.Models;
 using EspacioProductoRepository;
 using EspacioProducto;
+using EspacioViewModels;
 
 namespace tl2_tp8_2025_marta16g.Controllers;
 
@@ -22,17 +23,49 @@ public class ProductoController : Controller
     }
 
     [HttpGet]
+    public IActionResult Crear()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Crear(ProductoViewModel vm)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(vm);
+        }
+
+        Producto nuevoProducto = new Producto { Descripcion = vm.Descripcion, Precio = vm.Precio };
+
+        productoRepository.Alta(nuevoProducto);
+
+        return RedirectToAction("Index");
+    }
+
+
+    [HttpGet]
     public IActionResult Editar(int idProducto)
     {
         Producto producto = productoRepository.BuscarProducto(idProducto);
-        return View(producto);
+
+        ProductoViewModel nuevoVm = new ProductoViewModel { IdProducto = producto.IdProducto, Descripcion = producto.Descripcion, Precio = producto.Precio };
+
+        return View(nuevoVm);
     }
 
 
     [HttpPost]
-    public IActionResult Editar(Producto producto)
+    public IActionResult Editar(ProductoViewModel vm)
     {
-        productoRepository.Modificar(producto.IdProducto, producto);
+        if (!ModelState.IsValid)
+        {
+            return View(vm);
+        }
+
+        Producto productoEditado = new Producto{IdProducto = vm.IdProducto, Descripcion = vm.Descripcion, Precio = vm.Precio};
+
+        productoRepository.Modificar(productoEditado.IdProducto, productoEditado);
 
         return RedirectToAction(nameof(Index));
     }

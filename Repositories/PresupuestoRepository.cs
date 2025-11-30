@@ -112,7 +112,7 @@ public class PresupuestoRepository
 
 
     //AGREGAR UN PRODUCTO Y CANTIDAD A UN PRESUPUESTO
-    public bool AgregarDetalle(int idPresupuesto, int idProducto, int cantidad)
+    public void AgregarDetalle(int idPresupuesto, int idProducto, int cantidad)
     {
         using (var conexion = new SqliteConnection(connectionString))
         {
@@ -126,14 +126,29 @@ public class PresupuestoRepository
             comando.Parameters.Add(new SqliteParameter("@Cant", cantidad));
 
             int filas = comando.ExecuteNonQuery();
-            if (filas > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            // if (filas > 0)
+            // {
+            //     return true;
+            // }
+            // else
+            // {
+            //     return false;
+            // }
+        }
+    }
+    public void EliminarDetalle(int idPresupuesto, int idProducto)
+    {
+        using (SqliteConnection conexion = new SqliteConnection(connectionString))
+        {
+            conexion.Open();
+            string consulta = "DELETE FROM PresupuestoDetalle WHERE idPresupuesto = @idPres AND idProducto = @idProd";
+
+            using var deleteCmd = new SqliteCommand(consulta, conexion);
+            deleteCmd.Parameters.Add(new SqliteParameter("@idPres",idPresupuesto));
+            deleteCmd.Parameters.Add(new SqliteParameter("@idProd",idProducto));
+
+            deleteCmd.ExecuteNonQuery();
+            conexion.Close();
         }
     }
 
@@ -178,4 +193,5 @@ public class PresupuestoRepository
             }
         }
     }
+
 }
