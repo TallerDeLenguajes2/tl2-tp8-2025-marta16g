@@ -1,8 +1,8 @@
 using System.Diagnostics;
+using EspacioInterfaces;
 using EspacioPresupuesto;
-using EspacioPresupuestoDetalle;
 using EspacioProducto;
-using EspacioProductoRepository;
+using EspacioRepositories;
 using EspacioViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,32 +12,52 @@ namespace tl2_tp8_2025_marta16g.Controllers;
 
 public class PresupuestoController : Controller
 {
-    private PresupuestoRepository presupuestoRepository;
-    private ProductoRepository productoRepository;
+    private IPresupuestoRepository presupuestoRepository;
+    private IProductoRepository productoRepository;
+    private IAuthenticationService _authService;
 
-    public PresupuestoController()
+    public PresupuestoController(IPresupuestoRepository presurepo, IProductoRepository prodRepo, IAuthenticationService authService)
     {
-        presupuestoRepository = new PresupuestoRepository();
-        productoRepository = new ProductoRepository();
+        presupuestoRepository = presurepo;
+        productoRepository = prodRepo;
+        _authService = authService;
     }
 
     public IActionResult Index()
     {
-        List<Presupuesto> listaDePresupuestos;
-        listaDePresupuestos = presupuestoRepository.ListarPresupuetos();
-        return View(listaDePresupuestos);
+        if (!_authService.IsAuthenticated())
+        {
+            return RedirectToAction("Index", "Login");
+        }
+
+        if (_authService.HasAccessLevel("Administrador") ||
+_authService.HasAccessLevel("Cliente"))
+        {
+            //si es es valido entra sino vuelve a login
+            var presupuestos = presupuestoRepository.GetAll();
+            return View(presupuestos);
+        }
+        else
+        {
+            return RedirectToAction("Index", "Login");
+        }
     }
 
     [HttpGet]
     public IActionResult Detalle(int idPresupuesto)
     {
-        Presupuesto miPresupuesto = presupuestoRepository.BuscarPresupuesto(idPresupuesto);
+        Presupuesto miPresupuesto = presupuestoRepository.GetById(idPresupuesto);
         return View(miPresupuesto);
     }
 
     [HttpPost]
     public IActionResult AgregarDetalle(int idPresupuesto, int idProducto, int cantidad)
     {
+        var securityCheck = CheckAdminPermissions();
+        if (securityCheck != null)
+        {
+            return securityCheck;
+        }
         presupuestoRepository.AgregarDetalle(idPresupuesto, idProducto, cantidad);
 
         return RedirectToAction("Detalle", new { idPresupuesto });
@@ -47,14 +67,24 @@ public class PresupuestoController : Controller
     [HttpGet]
     public IActionResult Editar(int idPresupuesto)
     {
-        Presupuesto presupuesto = presupuestoRepository.BuscarPresupuesto(idPresupuesto);
+        var securityCheck = CheckAdminPermissions();
+        if (securityCheck != null)
+        {
+            return securityCheck;
+        }
+        Presupuesto presupuesto = presupuestoRepository.GetById(idPresupuesto);
         return View(presupuesto);
     }
 
     [HttpPost]
     public IActionResult Editar(Presupuesto presupuesto)
     {
-        presupuestoRepository.Modificar(presupuesto.IdPresupuesto, presupuesto);
+        var securityCheck = CheckAdminPermissions();
+        if (securityCheck != null)
+        {
+            return securityCheck;
+        }
+        presupuestoRepository.Update(presupuesto.IdPresupuesto, presupuesto);
 
         return RedirectToAction(nameof(Index));
     }
@@ -63,15 +93,25 @@ public class PresupuestoController : Controller
     [HttpGet]
     public IActionResult Eliminar(int idPresupuesto)
     {
-        Presupuesto presupuesto = presupuestoRepository.BuscarPresupuesto(idPresupuesto);
+        var securityCheck = CheckAdminPermissions();
+        if (securityCheck != null)
+        {
+            return securityCheck;
+        }
+        Presupuesto presupuesto = presupuestoRepository.GetById(idPresupuesto);
         return View(presupuesto);
     }
 
     [HttpPost, ActionName("Delete")]
     public IActionResult EliminarConfirmado(int idPresupuesto)
     {
+        var securityCheck = CheckAdminPermissions();
+        if (securityCheck != null)
+        {
+            return securityCheck;
+        }
         bool exito;
-        exito = presupuestoRepository.EliminarPresupuesto(idPresupuesto);
+        exito = presupuestoRepository.Delete(idPresupuesto);
         if (exito)
         {
             return RedirectToAction(nameof(Index));
@@ -85,7 +125,12 @@ public class PresupuestoController : Controller
     [HttpGet]
     public IActionResult AgregarProducto(int idPresupuesto)
     {
-        List<Producto> productos = productoRepository.ListarProductos();
+        var securityCheck = CheckAdminPermissions();
+        if (securityCheck != null)
+        {
+            return securityCheck;
+        }
+        List<Producto> productos = productoRepository.GetAll();
 
         AgregarProductoViewModel vm = new AgregarProductoViewModel { IdPresupuesto = idPresupuesto, ListaProductos = new SelectList(productos, "IdProducto", "Descripcion") };
 
@@ -96,10 +141,15 @@ public class PresupuestoController : Controller
     [HttpPost]
     public IActionResult AgregarProducto(AgregarProductoViewModel vm)
     {
-        
+        var securityCheck = CheckAdminPermissions();
+        if (securityCheck != null)
+        {
+            return securityCheck;
+        }
+
         if (!ModelState.IsValid)
         {
-            var productos = productoRepository.ListarProductos();
+            var productos = productoRepository.GetAll();
             vm.ListaProductos = new SelectList(productos, "IdProducto", "Descripcion");
             return View(vm);
         }
@@ -116,6 +166,29 @@ public class PresupuestoController : Controller
 
         return RedirectToAction("Detalle", new { idPresupuesto = idPresupuesto });
     }
+
+    public IActionResult AccesoDenegado()
+    {
+        return View();
+    }
+
+    private IActionResult CheckAdminPermissions()
+    {
+        // 1. No logueado? -> vuelve al login
+        if (!_authService.IsAuthenticated())
+        {
+            return RedirectToAction("Index", "Login");
+        }
+
+        // 2. No es Administrador? -> Da Error
+        if (!_authService.HasAccessLevel("Administrador"))
+        {
+            // Llamamos a AccesoDenegado (llama a la vista correspondiente de Productos)
+            return RedirectToAction(nameof(AccesoDenegado));
+        }
+        return null; // Permiso concedido
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

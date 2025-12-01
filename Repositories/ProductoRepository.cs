@@ -2,16 +2,17 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using EspacioProducto;
 using Microsoft.Data.Sqlite;
+using EspacioInterfaces;
 
-namespace EspacioProductoRepository
+namespace EspacioRepositories
 {
 
-    public class ProductoRepository
+    public class ProductoRepository : IProductoRepository
     {
         private string connectionString = "Data Source=DB/MiTienda.db";
 
         //TRAER UN PRODUCTO POR ID
-        public Producto BuscarProducto(int id)
+        public Producto GetById(int id)
         {
             using (var conexion = new SqliteConnection(connectionString))
             {
@@ -32,7 +33,7 @@ namespace EspacioProductoRepository
                 return miProducto;
             }
         }
-        public int Alta(Producto producto)
+        public int Create(Producto producto)
         {
             int nuevoId = 0;
             using (var conexion = new SqliteConnection(connectionString))
@@ -47,23 +48,7 @@ namespace EspacioProductoRepository
             }
             return nuevoId;
         }
-
-        public void Modificar(int id, Producto producto)
-        {
-            using (var conexion = new SqliteConnection(connectionString))
-            {
-                conexion.Open();
-                string consulta = "UPDATE Producto SET Descripcion = @Descripcion, Precio = @Precio WHERE idProducto = @Id";
-                using var comando = new SqliteCommand(consulta, conexion);
-                comando.Parameters.Add(new SqliteParameter("@Descripcion", producto.Descripcion));
-                comando.Parameters.Add(new SqliteParameter("@Precio", producto.Precio));
-                comando.Parameters.Add(new SqliteParameter("@Id", id));
-
-                comando.ExecuteNonQuery();
-            }
-        }
-
-        public List<Producto> ListarProductos()
+        public List<Producto> GetAll()
         {
             var productos = new List<Producto>();
             using (var conexion = new SqliteConnection(connectionString))
@@ -82,7 +67,23 @@ namespace EspacioProductoRepository
             return productos;
         }
 
-        public bool EliminarProducto(int id)
+        public void Update(int id, Producto producto)
+        {
+            using (var conexion = new SqliteConnection(connectionString))
+            {
+                conexion.Open();
+                string consulta = "UPDATE Producto SET Descripcion = @Descripcion, Precio = @Precio WHERE idProducto = @Id";
+                using var comando = new SqliteCommand(consulta, conexion);
+                comando.Parameters.Add(new SqliteParameter("@Descripcion", producto.Descripcion));
+                comando.Parameters.Add(new SqliteParameter("@Precio", producto.Precio));
+                comando.Parameters.Add(new SqliteParameter("@Id", id));
+
+                comando.ExecuteNonQuery();
+            }
+        }
+
+
+        public bool Delete(int id)
         {
             using (var conexion = new SqliteConnection(connectionString))
             {

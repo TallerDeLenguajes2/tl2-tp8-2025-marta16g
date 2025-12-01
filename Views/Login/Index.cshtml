@@ -1,0 +1,38 @@
+@using EspacioViewModels
+@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2 class="text-center">@ViewData["Iniciar Sesión"]</h2>
+
+<!-- Mostrar mensaje de error si existe -->
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.ErrorMessage
+    </div>
+}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+        <h4 class="card-title text-center mb-4">Iniciar sesión</h4>
+        <form method="post" asp-action="Login">
+            <div class="mb-3">
+                <label for="Username" class="form-label">Usuario:</label><input asp-for="Username" class="form-control" />
+
+            </div>
+
+            <div class="mb-3">
+                <label for="Pass" class="form-label">Contraseña:</label>
+                <input type="password" asp-for="Pass" class="form-control" />
+
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+            </div>
+        </form>
+    </div>
+</div>

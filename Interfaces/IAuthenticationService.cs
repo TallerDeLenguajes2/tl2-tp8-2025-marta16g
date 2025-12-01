@@ -1,0 +1,12 @@
+using System;
+
+namespace EspacioInterfaces
+{
+    public interface IAuthenticationService
+    {
+        bool Login(string username, string password);
+        void Logout();
+        bool IsAuthenticated();
+        bool HasAccessLevel(string requiredAccessLevel);
+    }
+}
